@@ -4,15 +4,12 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.imageio.ImageIO;
 
 public class ImageProcessing {
 
-	private static final int IMG_W = 300;
-	private static final int IMG_H = 300;
+	private static final int IMG_W = 500;
+	private static final int IMG_H = 500;
 
 	private BufferedImage readImage(String fileLocation) {
 		BufferedImage image = null;
@@ -25,21 +22,7 @@ public class ImageProcessing {
 		}
 		return image;
 	}
-
-	private double[] captureColours(BufferedImage image) {
-		int width = image.getWidth();
-		int height = image.getHeight();
-
-		List<Double> colors = new ArrayList<Double>();
-		for (int i = 0; i < height; i++) {
-			for (int j = 0; j < width; j++) {
-				Color c = new Color(image.getRGB(j, i));
-				colors.add(Double.parseDouble("" + c.getRed() + c.getGreen() + c.getBlue()));
-			}
-		}
-		return Utils.convertDoubles(colors);
-	}
-
+	
 	private BufferedImage generateEdgeImage(BufferedImage image) {
 		BufferedImage processedImage = null;
 
@@ -82,7 +65,7 @@ public class ImageProcessing {
 		return mergedImg;	
 	}
 	
-	public double[] processImage(String fileLocation) throws IOException{
+	public BufferedImage processImage(String fileLocation){
 		ImageProcessing imgP = new ImageProcessing();
 		BufferedImage rawImg =  imgP.readImage(fileLocation);
 		BufferedImage resizedRawImg = Utils.resizeImage(rawImg, rawImg.getType(), IMG_W, IMG_H);
@@ -90,9 +73,7 @@ public class ImageProcessing {
 		BufferedImage processedImg = imgP.generateEdgeImage(resizedRawImg);
 		BufferedImage mergedImg = imgP.mergeImgs(resizedRawImg, processedImg);
 		
-		//ImageIO.write(mergedImg, "jpg", new File("c:\\Project\\sample-images\\resized-raw-merged3.jpg"));
-		
-		return imgP.captureColours(mergedImg);
+		return mergedImg;
 	}
 
 }

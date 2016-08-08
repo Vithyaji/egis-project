@@ -11,7 +11,10 @@ import javax.imageio.ImageIO;
 
 public class ImageProcessing {
 
-	public BufferedImage readImage(String fileLocation) {
+	private static final int IMG_W = 300;
+	private static final int IMG_H = 300;
+
+	private BufferedImage readImage(String fileLocation) {
 		BufferedImage image = null;
 		try {
 			File input = new File(fileLocation);
@@ -23,7 +26,7 @@ public class ImageProcessing {
 		return image;
 	}
 
-	public double[] captureColours(BufferedImage image) {
+	private double[] captureColours(BufferedImage image) {
 		int width = image.getWidth();
 		int height = image.getHeight();
 
@@ -37,7 +40,7 @@ public class ImageProcessing {
 		return Utils.convertDoubles(colors);
 	}
 
-	public BufferedImage processImage(BufferedImage image) {
+	private BufferedImage generateEdgeImage(BufferedImage image) {
 		BufferedImage processedImage = null;
 
 		CannyEdgeDetector detector = new CannyEdgeDetector();
@@ -52,7 +55,7 @@ public class ImageProcessing {
 		return processedImage;
 	}
 
-	public BufferedImage mergeImgs(BufferedImage rawImg, BufferedImage processedImg){
+	private BufferedImage mergeImgs(BufferedImage rawImg, BufferedImage processedImg){
 		
 		BufferedImage mergedImg = new BufferedImage(rawImg.getWidth(), rawImg.getHeight(), rawImg.getType());
 		
@@ -76,10 +79,20 @@ public class ImageProcessing {
         	   }
            }
         }
+		return mergedImg;	
+	}
+	
+	public double[] processImage(String fileLocation) throws IOException{
+		ImageProcessing imgP = new ImageProcessing();
+		BufferedImage rawImg =  imgP.readImage(fileLocation);
+		BufferedImage resizedRawImg = Utils.resizeImage(rawImg, rawImg.getType(), IMG_W, IMG_H);
 		
-		return mergedImg;
+		BufferedImage processedImg = imgP.generateEdgeImage(resizedRawImg);
+		BufferedImage mergedImg = imgP.mergeImgs(resizedRawImg, processedImg);
 		
+		//ImageIO.write(mergedImg, "jpg", new File("c:\\Project\\sample-images\\resized-raw-merged3.jpg"));
 		
+		return imgP.captureColours(mergedImg);
 	}
 
 }

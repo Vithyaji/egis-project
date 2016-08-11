@@ -4,6 +4,11 @@ import imageprocessing.Utils;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Stream;
 
 public class ImageAnalyzer {
 
@@ -176,15 +181,60 @@ public class ImageAnalyzer {
 		return start+middleLength;
 	}
 
-	public int getIntensityCount(BufferedImage detailsImage, Region hairRegion) {
-		return 0;
+	public int getIntensityCount(BufferedImage image, Region region) {
+		
+		int edgeCount = 0;
+		for (int i = region.getStartY(); i < region.getEndY(); i++) {
+			for (int j = region.getStartX(); j < region.getEndX(); j++) {
+				Color pc = new Color(image.getRGB(j, i));
+				if (pc.getRed() > 0 || pc.getGreen() > 0 || pc.getBlue() > 0) {
+					edgeCount++;
+				}
+			}
+		}
+		return edgeCount;
 		
 		
 	}
 
-	public int[] getCommonColors(BufferedImage rawImage, Region hairRegion) {
-		return null;
+	public int[] getCommonColors(BufferedImage image, Region region) {
+		int[] topColors = new int[3];
+		int colorInt;
+		int colorCount;
+		int interatorCount;
+		Map<Integer, Integer> allColors = new HashMap<Integer, Integer>();
+		for (int i = region.getStartY(); i < region.getEndY(); i++) {
+			for (int j = region.getStartX(); j < region.getEndX(); j++) {
+				colorInt = image.getRGB(j, i);
+				if(allColors.containsKey(colorInt)){
+					colorCount = allColors.get(colorInt);
+					allColors.replace(colorInt, colorCount+1);
+				} else {
+					allColors.put(colorInt, 1);
+				}
+			}
+		}
+		allColors = sortByValue(allColors);
+		interatorCount = 0;
+		for (Entry<Integer, Integer> entry : allColors.entrySet())
+		{
+		    topColors[interatorCount]=entry.getKey();
+		    interatorCount++;
+		    if (interatorCount>2) {
+				break;
+			}
+		}
+		return topColors;
 		
+	}
+	
+	public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
+		Map<K, V> result = new LinkedHashMap<>();
+		Stream<Map.Entry<K, V>> st = map.entrySet().stream();
+
+		st.sorted(Map.Entry.comparingByValue()).forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
+
+		return result;
 	}
 
 }

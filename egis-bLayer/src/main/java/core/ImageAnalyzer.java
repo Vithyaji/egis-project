@@ -1,11 +1,12 @@
 package core;
 
-import imageprocessing.Utils;
-
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Stream;
@@ -16,31 +17,6 @@ public class ImageAnalyzer {
 		double[] inputSet = new double[10];
 
 		return inputSet;
-	}
-
-	public BufferedImage drawLine(BufferedImage image, Region region, int r, int g, int b) {
-		
-		BufferedImage linedImage = Utils.deepCopy(image);
-		
-		Color color = new Color(r, g, b);
-		
-		for (int i = region.getStartX(); i < region.getEndX(); i++) {
-			linedImage.setRGB(i, region.getStartY(), color.getRGB());
-		}
-		
-		for (int i = region.getStartX(); i < region.getEndX(); i++) {
-			linedImage.setRGB(i, region.getEndY(), color.getRGB());
-		}
-		
-		for (int i = region.getStartY(); i < region.getEndY(); i++) {
-			linedImage.setRGB(region.getStartX(), i, color.getRGB());
-		}
-		
-		for (int i = region.getStartY(); i < region.getEndY(); i++) {
-			linedImage.setRGB(region.getEndX(), i, color.getRGB());
-		}
-		
-		return linedImage;
 	}
 	
 	public Region getHeadRegion(BufferedImage image){
@@ -62,13 +38,19 @@ public class ImageAnalyzer {
 	
 	public Region getEyeRegion(Region headRegion) {
 		Region eyeRegion = new Region();
-		eyeRegion.setStartX(headRegion.getStartX());
-		eyeRegion.setEndX(headRegion.getEndX());
 		
-		int headMiddle = findMiddle(headRegion.getStartY(), headRegion.getEndY());
+		int headWidth = headRegion.getEndX()-headRegion.getStartX();
+		int headWPortion = headWidth/8;
 		
-		eyeRegion.setStartY(findMiddle(findMiddle(headRegion.getStartY(), headMiddle),headMiddle));
-		eyeRegion.setEndY(findMiddle(headMiddle,findMiddle(headMiddle, headRegion.getEndY())));
+		eyeRegion.setStartX(headRegion.getStartX()+headWPortion);
+		eyeRegion.setEndX(headRegion.getEndX()-headWPortion);
+		
+		int headHeight = headRegion.getEndY()-headRegion.getStartY();
+		int headHPortion = headHeight/8;
+		
+		eyeRegion.setStartY(headRegion.getStartY()+(headHPortion*3));
+		eyeRegion.setEndY(headRegion.getEndY()-(headHPortion*3));
+		
 		
 		return eyeRegion;
 		
@@ -77,24 +59,36 @@ public class ImageAnalyzer {
 	public Region getHairRegion(Region headRegion) {
 		
 		Region hairRegion = new Region();
-		hairRegion.setStartX(headRegion.getStartX());
-		hairRegion.setEndX(headRegion.getEndX());
-		hairRegion.setStartY(headRegion.getStartY());
+		int headWidth = headRegion.getEndX()-headRegion.getStartX();
+		int headWPortion = headWidth/8;
 		
-		int headMiddle = findMiddle(headRegion.getStartY(), headRegion.getEndY());
-		hairRegion.setEndY(findMiddle(headRegion.getStartY(), headMiddle));
+		hairRegion.setStartX(headRegion.getStartX()+headWPortion);
+		hairRegion.setEndX(headRegion.getEndX()-headWPortion);
+		
+		int headHeight = headRegion.getEndY()-headRegion.getStartY();
+		int headHPortion = headHeight/8;
+		
+		hairRegion.setStartY(headRegion.getStartY()+(headHPortion*0));
+		hairRegion.setEndY(headRegion.getStartY()+(headHPortion*2));
 		
 		return hairRegion;
 		
 	}
 	
+	
 	public Region getLowerFaceRegion(Region headRegion) {
 		Region lfRegion = new Region();
-		lfRegion.setStartX(headRegion.getStartX());
-		lfRegion.setEndX(headRegion.getEndX());
-		int headMiddle = findMiddle(headRegion.getStartY(), headRegion.getEndY());
-		lfRegion.setStartY(findMiddle(headMiddle,findMiddle(headMiddle, headRegion.getEndY())));
-		lfRegion.setEndY(headRegion.getEndY());
+		int headWidth = headRegion.getEndX()-headRegion.getStartX();
+		int headWPortion = headWidth/8;
+		
+		lfRegion.setStartX(headRegion.getStartX()+(headWPortion*1));
+		lfRegion.setEndX(headRegion.getEndX()-(headWPortion*1));
+		
+		int headHeight = headRegion.getEndY()-headRegion.getStartY();
+		int headHPortion = headHeight/8;
+		
+		lfRegion.setStartY(headRegion.getEndY()-(headHPortion*3));
+		lfRegion.setEndY(headRegion.getEndY()-(headHPortion*0));
 		return lfRegion;
 	}
 
@@ -175,11 +169,6 @@ public class ImageAnalyzer {
 		return endHeight;
 
 	}
-	
-	private int findMiddle(int start, int end){
-		int middleLength = (end-start)/2;
-		return start+middleLength;
-	}
 
 	public int getIntensityCount(BufferedImage image, Region region) {
 		
@@ -194,47 +183,61 @@ public class ImageAnalyzer {
 		}
 		return edgeCount;
 		
-		
 	}
 
 	public int[] getCommonColors(BufferedImage image, Region region) {
-		int[] topColors = new int[3];
+		List<Integer> topColors = new ArrayList<Integer>();
 		int colorInt;
-		int colorCount;
-		int interatorCount;
 		Map<Integer, Integer> allColors = new HashMap<Integer, Integer>();
 		for (int i = region.getStartY(); i < region.getEndY(); i++) {
 			for (int j = region.getStartX(); j < region.getEndX(); j++) {
 				colorInt = image.getRGB(j, i);
-				if(allColors.containsKey(colorInt)){
-					colorCount = allColors.get(colorInt);
-					allColors.replace(colorInt, colorCount+1);
-				} else {
+				colorInt = normalizeColor(colorInt);
+				if(!allColors.containsKey(colorInt)) {
 					allColors.put(colorInt, 1);
+				} else {
+					allColors.put(colorInt, allColors.get(colorInt) + 1);
 				}
 			}
 		}
 		allColors = sortByValue(allColors);
-		interatorCount = 0;
 		for (Entry<Integer, Integer> entry : allColors.entrySet())
 		{
-		    topColors[interatorCount]=entry.getKey();
-		    interatorCount++;
-		    if (interatorCount>2) {
-				break;
-			}
+			topColors.add(entry.getKey());
 		}
-		return topColors;
 		
+		int[] arr = new int[topColors.size()];
+		for (int i=0;i<arr.length; i++) {
+			arr[i] = topColors.get(i).intValue();
+		}
+		return arr;
 	}
 	
-	public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
+	private  <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
 		Map<K, V> result = new LinkedHashMap<>();
 		Stream<Map.Entry<K, V>> st = map.entrySet().stream();
-
-		st.sorted(Map.Entry.comparingByValue()).forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
+		st.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
 
 		return result;
 	}
+	
+	private int normalizeColor(int color) {
+
+		int normalizeConstatnt = 10;
+		Color orginalColor = new Color(color);
+
+		Color normalizedColor = new Color(round(orginalColor.getRed(),
+				normalizeConstatnt), round(orginalColor.getGreen(),
+				normalizeConstatnt), round(orginalColor.getBlue(),
+				normalizeConstatnt));
+
+		return normalizedColor.getRGB();
+	}
+	
+	private int round(int number, int div){
+		int deno = number%div;
+		return number-deno;
+	}
+	
 
 }

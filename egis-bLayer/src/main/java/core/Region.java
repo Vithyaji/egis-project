@@ -6,6 +6,7 @@ public class Region {
 	private int startY;
 	private int endX;
 	private int endY;
+	
 	public int getStartX() {
 		return startX;
 	}

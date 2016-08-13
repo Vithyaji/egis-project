@@ -16,10 +16,10 @@ public class ImageDetector {
 
 		double[] nnInputs = null;
 		ImageProcessing imgP = new ImageProcessing();
-
 		ImageAnalyzer ia = new ImageAnalyzer();
 
 		BufferedImage rawImage = Utils.readImage(fileLocation);
+		
 		BufferedImage resizedRawImage = Utils.resizeImage(rawImage,
 				rawImage.getType(), 500, 500);
 		BufferedImage detectionImage = imgP

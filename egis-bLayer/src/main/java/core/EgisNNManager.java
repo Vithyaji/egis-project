@@ -1,14 +1,11 @@
 package core;
 
-import function.impl.TanhFunction;
 import network.NeuralNetwork;
 
 public class EgisNNManager {
 	
-	private int[] networkLayout = {48, 40, 3};
-    private NeuralNetwork EgisNetwork = new NeuralNetwork(networkLayout, "Tanh" , 0.1);
+	private NeuralNetwork raceNetwork = new NeuralNetwork("C:\\Project\\nn\\raceNN");
 	
-    
     private static EgisNNManager instance;
 	private EgisNNManager(){}
 	
@@ -21,18 +18,35 @@ public class EgisNNManager {
 		
 	}
 	
-	public double[] getOutput(double[] nnInputs) {		
-		double[] outputValue = EgisNetwork.getOutputArray(nnInputs);	
+	public double[] getRaceOutput(double[] nnInputs) {	
+		
+		double[] outputValue = raceNetwork.getOutputArray(nnInputs);
+		for(int i=0;i<outputValue.length;i++){
+			if(outputValue[i]<0){
+				outputValue[i] =  Math.abs(outputValue[i]);
+			}
+		}
 		return outputValue;
 		
 	}
 	
 	
-	public void trainEgisNN(double[] nnInputs, double[] nnOutputs){
-		for (int j = 0; j < 10000; j++) {
-            EgisNetwork.train(nnInputs, nnOutputs);
-        }
-		EgisNetwork.saveToFile("C:\\Project\\nn-weights\\nnDetails");
+	public void trainRaceNetwork(double[][] nnInputs, double[][] nnOutputs) {
+		
+		int[] networkLayout = { 48, 7, 1 };
+		raceNetwork = new NeuralNetwork(networkLayout,"Tanh", 0.1);
+		
+		if (nnInputs.length == nnOutputs.length) {
+			for (int i = 0; i < 1000; i++) {
+				for (int j = 0; j < nnInputs.length; j++) {
+					for (int k = 0; k < 10; k++) {
+						raceNetwork.train(nnInputs[j], nnOutputs[j]);
+					}
+				}
+			}
+		}
+		raceNetwork.saveToFile("C:\\Project\\nn\\raceNN");
 	}
+	
 
 }

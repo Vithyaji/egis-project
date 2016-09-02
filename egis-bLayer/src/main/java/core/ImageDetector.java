@@ -2,11 +2,6 @@ package core;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-
 import imageprocessing.ImageProcessing;
 import imageprocessing.Utils;
 
@@ -43,16 +38,18 @@ public class ImageDetector {
 			nnInputs = new double[48];
 			int noOfColors = 5;
 			int currentPosition = 0;
-			nnInputs[currentPosition] = hairEdgeCount;
+			
+			nnInputs[currentPosition] = hairEdgeCount/10000;
 			currentPosition++;
+			nnInputs[currentPosition] = lfEdgeCount/10000;
+			currentPosition++;
+			nnInputs[currentPosition] = eyeEdgeCount/10000;
+			currentPosition++;
+			
 			copyColorValuestoNNInputs(hairColors, nnInputs, currentPosition, noOfColors);
 			currentPosition=currentPosition+15;
-			nnInputs[currentPosition] = eyeEdgeCount;
-			currentPosition++;
 			copyColorValuestoNNInputs(eyeColors, nnInputs, currentPosition, noOfColors);
 			currentPosition=currentPosition+15;
-			nnInputs[currentPosition] = lfEdgeCount;
-			currentPosition++;
 			copyColorValuestoNNInputs(lfColors, nnInputs, currentPosition, noOfColors);
 			
 		} else {
@@ -76,9 +73,9 @@ public class ImageDetector {
 			bluePosition = greenPosition+noOfCOlors;
 			currentColor = new Color(colorArray[i]);
 			
-			nnInputs[redPosition] = currentColor.getRed();
-			nnInputs[greenPosition] = currentColor.getGreen();
-			nnInputs[bluePosition] = currentColor.getBlue();
+			nnInputs[redPosition] = currentColor.getRed()/255.0;
+			nnInputs[greenPosition] = currentColor.getGreen()/255.0;
+			nnInputs[bluePosition] = currentColor.getBlue()/255.0;
 			
 		}
 		

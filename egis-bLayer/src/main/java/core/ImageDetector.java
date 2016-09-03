@@ -15,10 +15,8 @@ public class ImageDetector {
 
 		BufferedImage rawImage = Utils.readImage(fileLocation);
 		
-		BufferedImage resizedRawImage = Utils.resizeImage(rawImage,
-				rawImage.getType(), 500, 500);
-		BufferedImage detectionImage = imgP
-				.processImageForDetetion(resizedRawImage);
+		BufferedImage resizedRawImage = Utils.resizeImage(rawImage, rawImage.getType(), 500, 500);
+		BufferedImage detectionImage = imgP.processImageForDetetion(resizedRawImage);
 
 		Region headRegion = ia.getHeadRegion(detectionImage);
 		Region eyeRegion = ia.getEyeRegion(headRegion);

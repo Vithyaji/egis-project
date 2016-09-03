@@ -14,10 +14,9 @@ public class Trainer {
 		
 		try { 
             Scanner scanner = new Scanner(trainingDataSetFile);
-    		List<String> inputsFromFile = new ArrayList<String>();
+    		ArrayList<String> inputsFromFile = new ArrayList<String>();
             while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                inputsFromFile.add(line);
+                inputsFromFile.add(scanner.nextLine());
             }
             scanner.close();
             
@@ -31,10 +30,14 @@ public class Trainer {
     		
     		int i=0;
             for(String currentLine: inputsFromFile){
+            	
+            	
             	String[] inputValues = currentLine.split(",");
-            	System.out.println("Scanning features from Image " +inputValues[0]);
-            	System.out.println("Expected Race" +inputValues[1]);
-            	System.out.println("Expected Gender " +inputValues[2]);
+            	
+            	System.out.println("File Location " + inputValues[0]);
+            	System.out.println("Expected Race " + inputValues[1]);
+            	System.out.println("Expected Gender " + inputValues[2]);
+            	
             	expectedRaceOutputs[i][0] = Double.parseDouble(inputValues[1]);
             	expectedGenderOutputs[i][0] = Double.parseDouble(inputValues[2]);
             	
@@ -54,6 +57,8 @@ public class Trainer {
             }
             System.out.println("Training...");
     		egisManager.trainRaceNetwork(raceTraingInputs, expectedRaceOutputs, nnSaveLocation);
+    		egisManager.trainGenderNetwork(genderTraingInputs, expectedGenderOutputs, nnSaveLocation);
+    		
             
             
         } catch (FileNotFoundException e) {

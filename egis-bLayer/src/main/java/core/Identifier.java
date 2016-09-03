@@ -24,13 +24,13 @@ public class Identifier {
 			}
 			
 			double[] raceOutputArray = egisManager.getRaceOutput(raceInput);
-			double[] genderOutputArray = null;
+			double[] genderOutputArray = egisManager.getGenderOutput(genderInput);
 			
 			System.out.println("Race Output 0 :" + raceOutputArray[0]);
-			//System.out.println("Gender Output :" + genderOutputArray[0]);
+			System.out.println("Gender Output :" + genderOutputArray[0]);
 			
 			rng[0] = getRace(raceOutputArray);
-			//rng[1] = getGender(genderOutputArray);
+			rng[1] = getGender(genderOutputArray);
 			
 		} else {
 			System.out.println("Could not detect face");
@@ -60,9 +60,9 @@ public class Identifier {
 
 		String gender = "unknown";
 
-		if (nnOutput[2] > 0.8) {
+		if (nnOutput[0] > 0.8) {
 			gender = "Female";
-		} else if (nnOutput[2] < 0.2) {
+		} else if (nnOutput[0] < 0.2) {
 			gender = "Male";
 		}
 

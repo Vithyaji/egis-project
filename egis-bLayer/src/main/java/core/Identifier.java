@@ -27,7 +27,6 @@ public class Identifier {
 			double[] genderOutputArray = null;
 			
 			System.out.println("Race Output 0 :" + raceOutputArray[0]);
-			//System.out.println("Race Output 1 :" + raceOutputArray[1]);
 			//System.out.println("Gender Output :" + genderOutputArray[0]);
 			
 			rng[0] = getRace(raceOutputArray);

@@ -1,73 +1,67 @@
 package core;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
 public class Trainer {
 	
-	public void train(){
-		ImageDetector id = new ImageDetector();
-		EgisNNManager egisManager = EgisNNManager.getInstance();
-		double[][] expectedRaceOutputs = new double[16][1];
-		double[][] expectedGenderOutputs = new double[16][1];
+	public void train(String fileLocation, String nnSaveLocation){
 		
-		double[][] raceTraingInputs = new double[16][48];
-		double[][] genderTraingInputs = new double[16][3];
+		File trainingDataSetFile = new File(fileLocation);
 		
-		expectedRaceOutputs[0][0] = 0;
-		expectedRaceOutputs[1][0] = 0;
-		expectedRaceOutputs[2][0] = 0;
-		expectedRaceOutputs[3][0] = 0;
-		expectedRaceOutputs[4][0] = 1;
-		expectedRaceOutputs[5][0] = 1;
-		expectedRaceOutputs[6][0] = 1;
-		expectedRaceOutputs[7][0] = 1;
-		expectedRaceOutputs[8][0] = 0.66;
-		expectedRaceOutputs[9][0] = 0.66;
-		expectedRaceOutputs[10][0] = 0.66;
-		expectedRaceOutputs[11][0] = 0.66;
-		expectedRaceOutputs[12][0] = 0.33;
-		expectedRaceOutputs[13][0] = 0.33;
-		expectedRaceOutputs[14][0] = 0.33;
-		expectedRaceOutputs[15][0] = 0.33;
+		try { 
+            Scanner scanner = new Scanner(trainingDataSetFile);
+    		List<String> inputsFromFile = new ArrayList<String>();
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                inputsFromFile.add(line);
+            }
+            scanner.close();
+            
+    		double[][] expectedRaceOutputs = new double[inputsFromFile.size()][1];
+    		double[][] expectedGenderOutputs = new double[inputsFromFile.size()][1];
+    		double[][] raceTraingInputs = new double[inputsFromFile.size()][48];
+    		double[][] genderTraingInputs = new double[inputsFromFile.size()][3];
+            
+    		ImageDetector id = new ImageDetector();
+    		EgisNNManager egisManager = EgisNNManager.getInstance();
+    		
+    		int i=0;
+            for(String currentLine: inputsFromFile){
+            	String[] inputValues = currentLine.split(",");
+            	System.out.println("Scanning features from Image " +inputValues[0]);
+            	System.out.println("Expected Race" +inputValues[1]);
+            	System.out.println("Expected Gender " +inputValues[2]);
+            	expectedRaceOutputs[i][0] = Double.parseDouble(inputValues[1]);
+            	expectedGenderOutputs[i][0] = Double.parseDouble(inputValues[2]);
+            	
+            	
+    			double[] inputs = id.identifyNNInputs(inputValues[0]);
+    			if (inputs != null) {
+    				for (int j = 0; j < 3; j++) {
+    					genderTraingInputs[i][j]=inputs[j];
+    				}
+    				
+    				for (int j = 0; j < inputs.length; j++) {
+    					raceTraingInputs[i][j]=inputs[j];
+    					
+    				}
+    			}
+    			i++;
+            }
+            System.out.println("Training...");
+    		egisManager.trainRaceNetwork(raceTraingInputs, expectedRaceOutputs, nnSaveLocation);
+            
+            
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
 		
-/*		expectedRaceOutputs[0][0] = 0;
-		expectedRaceOutputs[1][1] = 0;
-		expectedRaceOutputs[2][1] = 0;
-		expectedRaceOutputs[3][1] = 0;
-		expectedRaceOutputs[4][1] = 1;
-		expectedRaceOutputs[5][1] = 1;
-		expectedRaceOutputs[6][1] = 1;
-		expectedRaceOutputs[7][1] = 1;
-		expectedRaceOutputs[8][1] = 0;
-		expectedRaceOutputs[9][1] = 0;
-		expectedRaceOutputs[10][1] = 0;
-		expectedRaceOutputs[11][1] = 0;
-		expectedRaceOutputs[12][1] = 1;
-		expectedRaceOutputs[13][1] = 1;
-		expectedRaceOutputs[14][1] = 1;
-		expectedRaceOutputs[15][1] = 1;*/
-
 		
 		
-		for (int i = 0; i < 16; i++) {
-
-			System.out.println("Scanning features from Image " + i);
-			double[] inputs = id.identifyNNInputs("C:\\Project\\sample-images\\training\\original" + i + ".jpg");
-
-			if (inputs != null) {
-				for (int j = 0; j < 3; j++) {
-					genderTraingInputs[i][j]=inputs[j];
-				}
-				
-				
-				for (int j = 0; j < inputs.length; j++) {
-					raceTraingInputs[i][j]=inputs[j];
-					
-				}
-			}
-		}
-		
-		System.out.println("Training...");
-		egisManager.trainRaceNetwork(raceTraingInputs, expectedRaceOutputs);
-		//egisManager.trainGenderNetwork(genderTraingInputs, expectedGenderOutputs);
 	}
 
 }

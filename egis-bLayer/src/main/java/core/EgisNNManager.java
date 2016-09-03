@@ -4,7 +4,7 @@ import network.NeuralNetwork;
 
 public class EgisNNManager {
 	
-	private NeuralNetwork raceNetwork = new NeuralNetwork("C:\\Project\\nn\\raceNN");
+	private NeuralNetwork raceNetwork = new NeuralNetwork("C:\\Project\\nn\\nn-race");
 	
     private static EgisNNManager instance;
 	private EgisNNManager(){}
@@ -31,7 +31,7 @@ public class EgisNNManager {
 	}
 	
 	
-	public void trainRaceNetwork(double[][] nnInputs, double[][] nnOutputs) {
+	public void trainRaceNetwork(double[][] nnInputs, double[][] nnOutputs, String nnSaveLocation) {
 		
 		int[] networkLayout = { 48, 7, 1 };
 		raceNetwork = new NeuralNetwork(networkLayout,"Tanh", 0.1);
@@ -45,7 +45,7 @@ public class EgisNNManager {
 				}
 			}
 		}
-		raceNetwork.saveToFile("C:\\Project\\nn\\raceNN");
+		raceNetwork.saveToFile(nnSaveLocation+"-race");
 	}
 	
 

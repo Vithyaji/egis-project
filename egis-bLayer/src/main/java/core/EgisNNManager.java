@@ -62,7 +62,7 @@ public class EgisNNManager {
 				}
 			}
 		}
-		raceNetwork.saveToFile(nnSaveLocation+"-race");
+		raceNetwork.saveToFile(nnSaveLocation+"-race"+Utils.getCurrentTime());
 	}
 	
 	public void trainGenderNetwork(double[][] nnInputs, double[][] nnOutputs, String nnSaveLocation) {
@@ -79,7 +79,7 @@ public class EgisNNManager {
 				}
 			}
 		}
-		genderNetwork.saveToFile(nnSaveLocation+"-gender");
+		genderNetwork.saveToFile(nnSaveLocation+"-gender"+Utils.getCurrentTime());
 	}
 	
 }

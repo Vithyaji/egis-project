@@ -54,7 +54,7 @@ public class NeuralNetwork {
         try {
             file.load(new FileInputStream(fileNameParam + FILE_EXT));
         } catch (IOException e) {
-            System.out.println(e.getStackTrace());
+            System.out.println(e.getMessage());
         }
 
         int[] layout = getIntArray(file.getProperty(LAYOUT).split(STRING_SEPERATOR));
@@ -166,7 +166,7 @@ public class NeuralNetwork {
         try {
             file.store(new FileOutputStream(fileNameParam + FILE_EXT), null);
         } catch (IOException e) {
-            System.out.println(e.getStackTrace());
+            System.out.println(e.getMessage());
         }
     }
 

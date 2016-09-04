@@ -12,13 +12,14 @@ import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 
 import core.Identifier;
+import core.Utils;
 import model.RnG;
 
-@Path("/identify")
+@Path("/identifier")
 public class ImageIdentifierWS {
 	
 	@POST
-	@Path("/image")
+	@Path("/identify")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
 	public RnG identifyImage(@FormDataParam("image") InputStream uploadedInputStream,

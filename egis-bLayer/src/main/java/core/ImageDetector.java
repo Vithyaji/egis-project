@@ -37,11 +37,11 @@ public class ImageDetector {
 			int noOfColors = 5;
 			int currentPosition = 0;
 			
-			nnInputs[currentPosition] = hairEdgeCount/10000;
+			nnInputs[currentPosition] = hairEdgeCount/10000.0;
 			currentPosition++;
-			nnInputs[currentPosition] = lfEdgeCount/10000;
+			nnInputs[currentPosition] = lfEdgeCount/10000.0;
 			currentPosition++;
-			nnInputs[currentPosition] = eyeEdgeCount/10000;
+			nnInputs[currentPosition] = eyeEdgeCount/10000.0;
 			currentPosition++;
 			
 			copyColorValuestoNNInputs(hairColors, nnInputs, currentPosition, noOfColors);

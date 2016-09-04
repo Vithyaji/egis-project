@@ -22,8 +22,8 @@ public class ImageIdentifierWS {
 	@Path("/identify")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
-	public RnG identifyImage(@FormDataParam("image") InputStream uploadedInputStream,
-			@FormDataParam("image") FormDataContentDisposition fileDetail){
+	
+	public RnG identifyImage(@FormDataParam("image") InputStream uploadedInputStream, @FormDataParam("image") FormDataContentDisposition fileDetail){
 		
 		String saveFileLocation = "C://Project//uploaded-images/" + fileDetail.getFileName();
 		Utils.writeToFile(uploadedInputStream, saveFileLocation);

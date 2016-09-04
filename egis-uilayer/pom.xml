@@ -41,11 +41,12 @@
 			<version>1.8</version>
 		</dependency>
 	
-	<dependency>
+		<dependency>
 			<groupId>com.vithyaji.project</groupId>
 			<artifactId>egis-blayer</artifactId>
 			<version>0.0.1</version>
 		</dependency>
+		
 	</dependencies>
 
 </project>

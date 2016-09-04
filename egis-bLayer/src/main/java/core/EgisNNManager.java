@@ -4,8 +4,8 @@ import network.NeuralNetwork;
 
 public class EgisNNManager {
 	
-	private NeuralNetwork raceNetwork = new NeuralNetwork("C:\\Project\\nn\\nn-race");
-	private NeuralNetwork genderNetwork = new NeuralNetwork("C:\\Project\\nn\\nn-gender");
+	private NeuralNetwork raceNetwork = null;
+	private NeuralNetwork genderNetwork = null;
 	
     private static EgisNNManager instance;
 	private EgisNNManager(){}
@@ -21,6 +21,8 @@ public class EgisNNManager {
 	
 	public double[] getRaceOutput(double[] nnInputs) {	
 		
+		String raceNNfile = Utils.loadPropfromFile("nnLocation.properties").getProperty("race-file");
+		raceNetwork = new NeuralNetwork(raceNNfile);
 		double[] outputValue = raceNetwork.getOutputArray(nnInputs);
 		for(int i=0;i<outputValue.length;i++){
 			if(outputValue[i]<0){
@@ -32,7 +34,9 @@ public class EgisNNManager {
 	}
 	
 	public double[] getGenderOutput(double[] nnInputs) {	
-		
+	
+		String genderNNfile = Utils.loadPropfromFile("nnLocation.properties").getProperty("gender-file");
+		genderNetwork = new NeuralNetwork(genderNNfile);
 		double[] outputValue = genderNetwork.getOutputArray(nnInputs);
 		for(int i=0;i<outputValue.length;i++){
 			if(outputValue[i]<0){

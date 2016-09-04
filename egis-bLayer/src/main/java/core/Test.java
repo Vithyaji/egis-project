@@ -11,6 +11,7 @@ public class Test {
 		String[] rng = identifier.identify("C:\\Project\\sample-images\\test8.jpg");
 		System.out.println("Race "+rng[0]);
 		System.out.println("gender "+rng[1]);
+		
 	}	
 
  

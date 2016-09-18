@@ -2,10 +2,15 @@ package core;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+
+import org.apache.log4j.Logger;
+
 import imageprocessing.ImageProcessing;
 import imageprocessing.Utils;
 
 public class ImageDetector {
+	
+	private static final Logger LOGGER = Logger.getLogger(ImageDetector.class);
 
 	public double[] identifyNNInputs(String fileLocation) {
 
@@ -51,7 +56,7 @@ public class ImageDetector {
 			copyColorValuestoNNInputs(lfColors, nnInputs, currentPosition, noOfColors);
 			
 		} else {
-			System.out.println("Coudn't Identify regions on "+fileLocation);
+			LOGGER.debug("Coudn't Identify regions on "+fileLocation);
 		}
 		
 		return nnInputs;

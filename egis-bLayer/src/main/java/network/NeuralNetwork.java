@@ -13,8 +13,14 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
+import core.Trainer;
+
 public class NeuralNetwork {
 
+	private static final Logger LOGGER = Logger.getLogger(NeuralNetwork.class);
+	
     private static final String FILE_EXT = ".nn";
     private static final String ACTIVATION_FUNCTION = "activationFunction";
     private static final String LEARNING_RATE = "learningRate";
@@ -54,7 +60,7 @@ public class NeuralNetwork {
         try {
             file.load(new FileInputStream(fileNameParam + FILE_EXT));
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            LOGGER.error(e.getMessage());
         }
 
         int[] layout = getIntArray(file.getProperty(LAYOUT).split(STRING_SEPERATOR));
@@ -96,7 +102,7 @@ public class NeuralNetwork {
         double[] output = getOutputArray(inputArrayParam);
         for (int j = 0; j < output.length; j++) {
             double error = expectedOutputArrayParam[j] - output[j];
-            System.out.println("Error: "+error);
+            LOGGER.error("Error: "+error);
             network.getLast().get(j).propagateErrorSignal(error);
         }
 
@@ -120,7 +126,7 @@ public class NeuralNetwork {
      */
     public void train(final double[][] inputSetArrayParam, final double[][] expectedOutputSetArrayParam, final int epochsParam) {
         if (inputSetArrayParam.length != expectedOutputSetArrayParam.length) {
-            System.out.println("Inconsistant training sets. Training aborted!");
+        	LOGGER.debug("Inconsistant training sets. Training aborted!");
         } else {
             for (int i = 0; i < epochsParam; i++) {
                 for (int j = 0; j < inputSetArrayParam.length; j++) {
@@ -166,7 +172,7 @@ public class NeuralNetwork {
         try {
             file.store(new FileOutputStream(fileNameParam + FILE_EXT), null);
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+        	LOGGER.error(e.getMessage());
         }
     }
 

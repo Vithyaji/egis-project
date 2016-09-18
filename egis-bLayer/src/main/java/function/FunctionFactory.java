@@ -1,11 +1,16 @@
 package function;
 
+import org.apache.log4j.Logger;
+
+import core.Trainer;
 import function.impl.SigmoidFunction;
 import function.impl.TanhFunction;
 
 public class FunctionFactory {
 
-    public static Function getFunction(String functionParam) {
+	private static final Logger LOGGER = Logger.getLogger(FunctionFactory.class);
+
+	public static Function getFunction(String functionParam) {
 
         if("Sigmoid".equalsIgnoreCase(functionParam))
             return new SigmoidFunction();
@@ -13,7 +18,7 @@ public class FunctionFactory {
         if("Tanh".equalsIgnoreCase(functionParam))
             return new TanhFunction();
 
-        System.out.println("Invalid function name. Default function will be used.");
+        LOGGER.debug("Invalid function name. Default function will be used.");
         return new TanhFunction();
     }
 }

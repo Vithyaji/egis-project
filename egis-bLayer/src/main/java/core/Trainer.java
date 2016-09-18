@@ -3,10 +3,13 @@ package core;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
+import org.apache.log4j.Logger;
+
 public class Trainer {
+	
+	private static final Logger LOGGER = Logger.getLogger(Trainer.class);
 	
 	public void train(String fileLocation, String nnSaveLocation){
 		
@@ -34,9 +37,9 @@ public class Trainer {
             	
             	String[] inputValues = currentLine.split(",");
             	
-            	System.out.println("File Location " + inputValues[0]);
-            	System.out.println("Expected Race " + inputValues[1]);
-            	System.out.println("Expected Gender " + inputValues[2]);
+            	LOGGER.debug("File Location " + inputValues[0]);
+            	LOGGER.debug("Expected Race " + inputValues[1]);
+            	LOGGER.debug("Expected Gender " + inputValues[2]);
             	
             	expectedRaceOutputs[i][0] = Double.parseDouble(inputValues[1]);
             	expectedGenderOutputs[i][0] = Double.parseDouble(inputValues[2]);
@@ -55,14 +58,14 @@ public class Trainer {
     			}
     			i++;
             }
-            System.out.println("Training...");
+            LOGGER.debug("Training...");
     		egisManager.trainRaceNetwork(raceTraingInputs, expectedRaceOutputs, nnSaveLocation);
     		egisManager.trainGenderNetwork(genderTraingInputs, expectedGenderOutputs, nnSaveLocation);
     		
             
             
         } catch (FileNotFoundException e) {
-            System.out.println(e.getMessage());
+        	LOGGER.error(e.getMessage());
         }
 		
 		

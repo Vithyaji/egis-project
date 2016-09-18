@@ -1,5 +1,6 @@
 package core;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -11,7 +12,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
+
 public class Utils {
+	
+	private static final Logger LOGGER = Logger.getLogger(Utils.class);
 	
 	public static Properties loadPropfromFile(String fileLocation){
 
@@ -22,13 +28,13 @@ public class Utils {
 			prop.load(input);
 
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			LOGGER.debug(ex.getMessage());
 		} finally {
 			if (input != null) {
 				try {
 					input.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					LOGGER.debug(e.getMessage());
 				}
 			}
 		}
@@ -53,7 +59,7 @@ public class Utils {
 				out.close();
 			} catch (IOException e) {
 
-				e.printStackTrace();
+				LOGGER.debug(e.getMessage());
 			}
 
 		}
@@ -62,6 +68,22 @@ public class Utils {
 		DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd HHmmss");
 		Date date = new Date();
 		return dateFormat.format(date);
+	}
+	
+	public static String fileToString(String fileName){
+		
+		
+		String path = Utils.class.getClassLoader().getResource(fileName).getFile();
+        File file = new File(path);
+        String fileAsStr = null;
+		try {
+			fileAsStr = FileUtils.readFileToString(file, "UTF-8");
+		} catch (IOException e) {
+			LOGGER.debug(e.getMessage());
+		}
+		
+		return fileAsStr;
+		
 	}
 
 }

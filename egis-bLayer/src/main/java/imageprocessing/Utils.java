@@ -9,7 +9,13 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import org.apache.log4j.Logger;
+
+import core.Trainer;
+
 public class Utils {
+	
+	private static final Logger LOGGER = Logger.getLogger(Utils.class);
 	
 	public static BufferedImage resizeImage(BufferedImage originalImage, int type, int targetWidth, int targetHeight){
 		BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, type);
@@ -32,8 +38,8 @@ public class Utils {
 			File input = new File(fileLocation);
 			image = ImageIO.read(input);
 		} catch (IOException e) {
-			System.out.println("Cannot read file. Following exection was thrown");
-			System.out.println(e.getMessage());
+			LOGGER.error("Cannot read file. Following exection was thrown");
+			LOGGER.error(e.getMessage());
 		}
 		return image;
 	}

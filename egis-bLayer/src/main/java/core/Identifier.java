@@ -1,8 +1,17 @@
 package core;
 
+import org.apache.log4j.Logger;
+
+
+
 public class Identifier {
 	
+	private static final Logger LOGGER = Logger.getLogger(Identifier.class);
+	
+	
 	public String[] identify(String fileLocation){
+		
+		
 		
 		ImageDetector id = new ImageDetector();
 		EgisNNManager egisManager = EgisNNManager.getInstance();
@@ -26,14 +35,14 @@ public class Identifier {
 			double[] raceOutputArray = egisManager.getRaceOutput(raceInput);
 			double[] genderOutputArray = egisManager.getGenderOutput(genderInput);
 			
-			System.out.println("Race Output 0 :" + raceOutputArray[0]);
-			System.out.println("Gender Output :" + genderOutputArray[0]);
+			LOGGER.debug("Race Output 0 :" + raceOutputArray[0]);
+			LOGGER.debug("Gender Output :" + genderOutputArray[0]);
 			
 			rng[0] = getRace(raceOutputArray);
 			rng[1] = getGender(genderOutputArray);
 			
 		} else {
-			System.out.println("Could not detect face");
+			LOGGER.debug("Could not detect face");
 		}
 		
 		return rng;

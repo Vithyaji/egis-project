@@ -22,7 +22,7 @@ import model.RnG;
 public class ImageIdentifierWS {
 	
 
-	private static final String LOG4J_PROP = "C:/Project/egis-project/egis-uilayer/config/log4j.properties";
+	private static final String LOG4J_PROP = "./config/log4j.properties";
 	
 	@POST
 	@Path("/identify")

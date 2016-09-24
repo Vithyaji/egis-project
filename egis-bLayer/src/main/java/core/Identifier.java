@@ -35,7 +35,7 @@ public class Identifier {
 			double[] raceOutputArray = egisManager.getRaceOutput(raceInput);
 			double[] genderOutputArray = egisManager.getGenderOutput(genderInput);
 			
-			LOGGER.debug("Race Output 0 :" + raceOutputArray[0]);
+			LOGGER.debug("Race Output :" + raceOutputArray[0]);
 			LOGGER.debug("Gender Output :" + genderOutputArray[0]);
 			
 			rng[0] = getRace(raceOutputArray);

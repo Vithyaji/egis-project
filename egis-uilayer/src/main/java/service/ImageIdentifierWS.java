@@ -8,7 +8,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import com.sun.jersey.core.header.FormDataContentDisposition;
@@ -16,7 +15,6 @@ import com.sun.jersey.multipart.FormDataParam;
 
 import core.Identifier;
 import core.Utils;
-import model.RnG;
 
 @Path("/identifier")
 public class ImageIdentifierWS {
